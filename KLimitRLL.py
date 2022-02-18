@@ -127,17 +127,19 @@ def checkSequence(word, k):
     return zeros not in word
 
 
-def generateBinaryWord():
-    length = random.randint(30, 1000)
+def generateBinaryWord(min_length, max_length):
+    length = random.randint(min_length, max_length)
     word = ''
     for i in range(length):
         word += str(random.randint(0, 1))
     return word
 
-def test():
-    for i in range(100):
-        word = generateBinaryWord()
-        k = random.randint(3, 12)
+def kLimitRLLTest(iterations = 100, min_k = 3, max_k = 10, min_length = 10, max_length = 300):
+    if min_k < 3:
+        return
+    for i in range(iterations):
+        word = generateBinaryWord(min_length, max_length)
+        k = random.randint(min_k, max_k)
         encoded_word = encodeAnyRun(word, k)
         decoded_word = decodeAnyRun(encoded_word, k)
         is_it_true = decoded_word == decoded_word and checkSequence(encoded_word, k)
@@ -145,14 +147,5 @@ def test():
             print(is_it_true, word, k)
 
 if __name__ == '__main__':
-    test()
-    # a = '101001110010000111000101101000110100011010010000000101' #length of 55
-    # #check whether it works for every natural number higher than 3
-    # k = 4
-    # print(a, len(a))
-    # b = encodeAnyRun(a, k)
-    # print(b, len(b))
-    # c = decodeAnyRun(b, k)
-    # print(c, len(c))
-    # print(f"Number of redundancy bits is: {redundancyBits(a, b)}")
-    # print(a == c and checkSequence(b, k))
+    kLimitRLLTest()
+
