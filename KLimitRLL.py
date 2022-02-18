@@ -1,5 +1,5 @@
 import math
-
+import random
 
 def encodeFile(filename, k = -1):
     with open("encodedFile.txt", 'w') as f_out:
@@ -15,41 +15,6 @@ def decodeFile(filename, k = -1):
                 print(decodeAnyRun(line, k), file = f_out)
 
 
-
-# def encodeAnyRun(word, k = -1):
-#     if k == -1:
-#         return encodeWord(word)
-#     log_n = k - 1
-#     n = int(math.pow(2, log_n))
-#     output = ''
-#     for i in range(math.floor(len(word)/n)):
-#         small_word = word[i*n: (i+1)*n]
-#         output += encodeWord(small_word)
-#
-#     last_word_len = len(word) % n
-#     last_word = word[-last_word_len:]
-#     if last_word_len < k:
-#         return output + last_word
-#     else:
-#         return output + encodeWord(last_word)
-#
-# def decodeAnyRun(word, k = -1):
-#     if k == -1:
-#         return decodeWord(word)
-#     log_n = k - 1
-#     n = int(math.pow(2, log_n))
-#     output = ''
-#     for i in range(math.floor(len(word)/(n+1))):
-#         small_word = word[i*(n+1): (i+1)*(n+1)]
-#         output += decodeWord(small_word)
-#
-#     last_word_len = len(word) % (n+1)
-#     last_word = word[-last_word_len:]
-#     if last_word_len < k:
-#         return output + last_word
-#     else:
-#         return output + decodeWord(last_word)
-#
 
 
 def encodeAnyRun(word, k = -1):
@@ -77,10 +42,8 @@ def encodeAnyRun(word, k = -1):
     last_word_len = len(word) % (n-k)
     last_word = word[-last_word_len:]
 
-    if last_word_len < k:
-        if last_word_len == 0:
-            return output
-        return output + last_word
+    if last_word_len == 0:
+        return output
     else:
         return output[: -k] + encodeWord(last_k + last_word)
 
@@ -98,11 +61,7 @@ def decodeAnyRun(word, k = -1):
     if n >= len(word):
         return decodeWord(word)
     last_word_len = (len(word) - (n + 1)) % (n - k + 1)
-    if last_word_len <= k: #cannot actually be k
-        if last_word_len != 0:
-            output += word[-last_word_len:]
-            word = word[: -last_word_len]
-    else: #k+1 or higher
+    if last_word_len != 0:
         decoded_last_word = decodeWord(word[-k-last_word_len:])
         left_k = decoded_last_word[: k]
         right_remainder = decoded_last_word[k:]
@@ -167,14 +126,33 @@ def checkSequence(word, k):
     zeros = '0' * k
     return zeros not in word
 
+
+def generateBinaryWord():
+    length = random.randint(30, 1000)
+    word = ''
+    for i in range(length):
+        word += str(random.randint(0, 1))
+    return word
+
+def test():
+    for i in range(100):
+        word = generateBinaryWord()
+        k = random.randint(3, 12)
+        encoded_word = encodeAnyRun(word, k)
+        decoded_word = decodeAnyRun(encoded_word, k)
+        is_it_true = decoded_word == decoded_word and checkSequence(encoded_word, k)
+        if (is_it_true == False):
+            print(is_it_true, word, k)
+
 if __name__ == '__main__':
-    a = '01100000000000011111111000000000000000001111101010101010011111000010010101111000000000101000' #length of 55
-    #check whether it works for every natural number higher than 3
-    k = 5
-    print(a, len(a))
-    b = encodeAnyRun(a, k)
-    print(b, len(b))
-    c = decodeAnyRun(b, k)
-    print(c, len(c))
-    print(f"Number of redundancy bits is: {redundancyBits(a, b)}")
-    print(a == c and checkSequence(b, k))
+    test()
+    # a = '101001110010000111000101101000110100011010010000000101' #length of 55
+    # #check whether it works for every natural number higher than 3
+    # k = 4
+    # print(a, len(a))
+    # b = encodeAnyRun(a, k)
+    # print(b, len(b))
+    # c = decodeAnyRun(b, k)
+    # print(c, len(c))
+    # print(f"Number of redundancy bits is: {redundancyBits(a, b)}")
+    # print(a == c and checkSequence(b, k))
