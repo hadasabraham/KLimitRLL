@@ -1,25 +1,57 @@
 import math
 import random
+import os
 
-def encodeFile(filename, k = -1):
+def is_binary_str(string):
+    p = set(string)
+    s = {'0', '1'}
+    if s == p or p == {'0'} or p == {'1'}:
+        return True
+    return False
+
+def input_validation_encode_file_krll(filename, k):
+    if not os.path.isfile(filename):
+        raise Exception('Input file not found')
+    if k < 3:
+        raise Exception(f'k must be bigger than 2')
+    with open("encodedFile.txt", 'w') as f_out:
+        with open(filename, 'r') as f:
+            for line in f.read().splitlines():
+                if not is_binary_str(line):
+                    raise Exception(f'all lines must be binary')
+
+def encodeFile(filename, k = 3):
     with open("encodedFile.txt", 'w') as f_out:
         with open(filename, 'r') as f:
             for line in f.read().splitlines():
                 print(encodeAnyRun(line, k), file = f_out)
 
+def input_validation_decode_file_krll(filename, k):
+    if not os.path.isfile(filename):
+        raise Exception('Output file path doesn\'t exist')
+    if k < 3:
+        raise Exception(f'k must be bigger than 2')
+    with open(filename, 'r') as f:
+        for line in f.read().splitlines():
+            if not is_binary_str(line):
+                raise Exception(f'all lines must be binary')
 
-def decodeFile(filename, k = -1):
+def decodeFile(filename, k = 3):
     with open("decodedFile.txt", 'w') as f_out:
         with open(filename, 'r') as f:
             for line in f.read().splitlines():
                 print(decodeAnyRun(line, k), file = f_out)
 
 
+def input_validation_encode_any_run_krll(word, k):
+    if word == "":
+        raise Exception('please insert input for the algorithm')
+    if k < 3:
+        raise Exception(f'k must be bigger than 2')
+    if not is_binary_str(word):
+        raise Exception(f'word is not binary')
 
-
-def encodeAnyRun(word, k = -1):
-    if k == -1:
-        return encodeWord(word)
+def encodeAnyRun(word, k = 3):
     log_n = k - 1
     n = int(math.pow(2, log_n))
     output = ''
@@ -48,10 +80,16 @@ def encodeAnyRun(word, k = -1):
         return output[: -k] + encodeWord(last_k + last_word)
 
 
+def input_validation_decode_any_run_krll(word, k):
+    if word == "":
+        raise Exception('please insert input for the algorithm')
+    if k < 3:
+        raise Exception(f'k must be bigger than 2')
+    if not is_binary_str(word):
+        raise Exception(f'word is not binary')
 
 
-
-def decodeAnyRun(word, k = -1):
+def decodeAnyRun(word, k = 3):
     #cannot be k
     #if its higher than k this means that it has been encoded
     #otherwise it has not been decoded
@@ -148,4 +186,3 @@ def kLimitRLLTest(iterations = 100, min_k = 3, max_k = 10, min_length = 10, max_
 
 if __name__ == '__main__':
     kLimitRLLTest()
-
